@@ -104,6 +104,7 @@ sudo wget https://download.nextcloud.com/server/releases/latest.zip -P /var/www/
 sudo unzip /var/www/html/latest.zip -d /var/www/html
 sudo rm /var/www/html/latest.zip
 sudo chown -R www-data:www-data /var/www/html/nextcloud
+sudo chown -R www-data:www-data /mnt/NFS
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/nextcloud.conf -P /etc/apache2/sites-available/
 
 sudo a2ensite nextcloud.conf

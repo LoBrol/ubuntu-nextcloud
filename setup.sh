@@ -81,7 +81,7 @@ chsh -s /bin/zsh
 
 
 # --- CONFIGURE NFS ---
-sudo apt install -y nfs-common nfs-utils
+sudo apt install -y nfs-common
 sudo mkdir /mnt/NFS
 sudo mount ${NFS_IP}:${NFS_PATH} /mnt/NFS
 echo "${NFS_IP}:${NFS_PATH}        /mnt/NFS        nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0" | sudo tee -a /etc/fstab

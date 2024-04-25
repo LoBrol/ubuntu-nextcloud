@@ -41,6 +41,7 @@ sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to
 sudo sed -i 's/HOST_IP/'${HOST_IP}'/g' /etc/netplan/50-cloud-init.yaml
 sudo sed -i 's/HOST_SUBNET/'${HOST_SUBNET}'/g' /etc/netplan/50-cloud-init.yaml
 sudo sed -i 's/HOST_GATEWAY/'${HOST_GATEWAY}'/g' /etc/netplan/50-cloud-init.yaml
+sudo netplan apply
 
 
 

@@ -92,7 +92,8 @@ echo "${NFS_IP}:${NFS_PATH}        /mnt/NFS        nfs auto,nofail,noatime,noloc
 
 
 # --- NEXTCLOUD ---
-sudo apt install -y apache2 php libapache2-mod-php php-gd php-mysql php-curl php-xml php-mbstring php-zip php-intl mariadb-server
+sudo apt install -y apache2 php libapache2-mod-php mariadb-server
+sudo apt install -y php-gd php-mysql php-curl php-xml php-mbstring php-zip php-intl
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "CREATE DATABASE nextcloud;"
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "CREATE USER '${NEXTCLOUD_USER}'@'localhost' IDENTIFIED BY '${NEXTCLOUD_PASSWORD}';"
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "GRANT ALL PRIVILEGES ON nextcloud.* TO '${NEXTCLOUD_USER}'@'localhost';"

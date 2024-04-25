@@ -100,7 +100,7 @@ sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "GRANT ALL PRI
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "FLUSH PRIVILEGES;"
 
 sudo wget https://download.nextcloud.com/server/releases/latest.zip -P /var/www/html
-sudo unzip /var/www/html/latest.zip
+sudo unzip /var/www/html/latest.zip -d /var/www/html/
 sudo rm /var/www/html/latest.zip
 sudo chown -R www-data:www-data /var/www/html/nextcloud
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/nextcloud.conf -P /etc/apache2/sites-available/

@@ -38,9 +38,9 @@ sudo ufw allow 2049/tcp
 # --- Setting up IP ---
 sudo rm /etc/netplan/50-cloud-init.yaml
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/50-cloud-init.yaml -P /etc/netplan/
-sudo sed -i 's/HOST_IP/${HOST_IP}/g' /etc/netplan/50-cloud-init.yaml
-sudo sed -i 's/HOST_SUBNET/${HOST_SUBNET}/g' /etc/netplan/50-cloud-init.yaml
-sudo sed -i 's/HOST_GATEWAY/${HOST_GATEWAY}/g' /etc/netplan/50-cloud-init.yaml
+sudo sed -i 's/HOST_IP/'${HOST_IP}'/g' /etc/netplan/50-cloud-init.yaml
+sudo sed -i 's/HOST_SUBNET/'${HOST_SUBNET}'/g' /etc/netplan/50-cloud-init.yaml
+sudo sed -i 's/HOST_GATEWAY/'${HOST_GATEWAY}'/g' /etc/netplan/50-cloud-init.yaml
 
 
 

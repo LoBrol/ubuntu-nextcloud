@@ -96,11 +96,6 @@ echo "${NFS_IP}:${NFS_PATH}        /mnt/NFS        nfs auto,nofail,noatime,noloc
 sudo apt install -y apache2 php libapache2-mod-php mariadb-server
 sudo apt install -y php-gd php-mysql php-curl php-xml php-mbstring php-zip php-intl
 
-#sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "CREATE DATABASE nextcloud;"
-#sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "CREATE USER '${NEXTCLOUD_USER}'@'localhost' IDENTIFIED BY '${NEXTCLOUD_PASSWORD}';"
-#sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "GRANT ALL PRIVILEGES ON nextcloud.* TO '${NEXTCLOUD_USER}'@'localhost';"
-#sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "FLUSH PRIVILEGES;"
-
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "CREATE DATABASE nextcloud CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "CREATE USER '${NEXTCLOUD_USER}'@'localhost' identified by '${NEXTCLOUD_PASSWORD}';"
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "GRANT ALL PRIVILEGES on nextcloud.* to '${NEXTCLOUD_USER}'@'localhost';"
@@ -117,4 +112,4 @@ sudo a2ensite nextcloud.conf
 sudo a2enmod rewrite
 service apache2 restart
 
-sudo -u www-data php /var/www/nextcloud/occ maintenance:install --database "mysql" --database-name "nextcloud" --database-user "${NEXTCLOUD_USER}" --database-pass "${NEXTCLOUD_PASSWORD}" --admin-user "admin" --admin-pass "password" --data-dir "/mnt/NFS"
+# sudo -u www-data php /var/www/nextcloud/occ maintenance:install --database "mysql" --database-name "nextcloud" --database-user "${NEXTCLOUD_USER}" --database-pass "${NEXTCLOUD_PASSWORD}" --admin-user "admin" --admin-pass "password" --data-dir "/mnt/NFS"

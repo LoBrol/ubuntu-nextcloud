@@ -5,7 +5,7 @@
 # network: {config: disabled}
 network:
     version: 2
-    wifis:
+    ethernets:
         renderer: networkd
         ens32:
             dhcp4: false

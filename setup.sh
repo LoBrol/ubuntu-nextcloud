@@ -9,13 +9,19 @@ HOST_IP="x.x.x.x"
 HOST_SUBNET="32"
 HOST_GATEWAY="x.x.x.x"
 
+MYSQL_USER="root"
+MYSQL_PASSWORD=""
+
+NEXTCLOUD_USER="root"
+NEXTCLOUD_PASSWORD="password"
+
 
 
 
 # --- UPDATE and UPGRADE ---
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y openssh-server nano ufw tee curl wget git df zsh neofetch lm-sensors
+sudo apt install -y openssh-server nano ufw tee curl wget git unzip df zsh neofetch lm-sensors
 
 
 
@@ -31,7 +37,7 @@ sudo ufw allow 2049/tcp
 
 # --- Setting up IP ---
 sudo rm /etc/netplan/50-cloud-init.yaml
-sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu_docker/main/file_to_be_copied/50-cloud-init.yaml -P /etc/netplan/
+sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/50-cloud-init.yaml -P /etc/netplan/
 sudo sed -i 's/HOST_IP/${HOST_IP}/g' /etc/netplan/50-cloud-init.yaml
 sudo sed -i 's/HOST_SUBNET/${HOST_SUBNET}/g' /etc/netplan/50-cloud-init.yaml
 sudo sed -i 's/HOST_GATEWAY/${HOST_GATEWAY}/g' /etc/netplan/50-cloud-init.yaml
@@ -40,7 +46,7 @@ sudo sed -i 's/HOST_GATEWAY/${HOST_GATEWAY}/g' /etc/netplan/50-cloud-init.yaml
 
 # --- Setting up NANO ---
 sudo rm /etc/nanorc
-sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu_docker/main/file_to_be_copied/nanorc -P /etc/
+sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/nanorc -P /etc/
 
 
 
@@ -51,7 +57,7 @@ sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu_docker/main/file_to_be
 sudo rm -rf /etc/legal
 sudo chmod -x /etc/update-motd.d/10-help-text
 sudo chmod -x /etc/update-motd.d/50-motd-news
-sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu_docker/main/file_to_be_copied/20-neofetch -P /etc/update-motd.d/
+sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/20-neofetch -P /etc/update-motd.d/
 sudo chmod +x /etc/update-motd.d/20-neofetch
 
 
@@ -65,8 +71,8 @@ echo "Y Y Y" | sudo sensors-detect
 echo "N exit" | sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 rm .zshrc
-wget https://raw.githubusercontent.com/LoBrol/ubuntu_docker/main/file_to_be_copied/.zshrc
-wget https://raw.githubusercontent.com/LoBrol/ubuntu_docker/main/file_to_be_copied/.p10k.zsh
+wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/.zshrc
+wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/.p10k.zsh
 chsh -s /bin/zsh
 
 
@@ -87,3 +93,17 @@ echo "${NFS_IP}:${NFS_PATH}        /mnt/NFS        nfs auto,nofail,noatime,noloc
 
 # --- NEXTCLOUD ---
 sudo apt install -y apache2 php libapache2-mod-php php-gd php-mysql php-curl php-xml php-mbstring php-zip php-intl mariadb-server
+sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "CREATE DATABASE nextcloud;"
+sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "CREATE USER '${NEXTCLOUD_USER}'@'localhost' IDENTIFIED BY '${NEXTCLOUD_PASSWORD}';"
+sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "GRANT ALL PRIVILEGES ON nextcloud.* TO '${NEXTCLOUD_USER}'@'localhost';"
+sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "FLUSH PRIVILEGES;"
+
+sudo wget https://download.nextcloud.com/server/releases/latest.zip -P /var/www/html
+sudo unzip /var/www/html/latest.zip
+sudo rm /var/www/html/latest.zip
+sudo chown -R www-data:www-data /var/www/html/nextcloud
+sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/nextcloud.conf -P /etc/apache2/sites-available/
+
+sudo a2ensite nextcloud.conf
+sudo a2enmod rewrite
+service apache2 restart

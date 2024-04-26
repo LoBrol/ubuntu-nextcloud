@@ -85,7 +85,7 @@ chsh -s /bin/zsh
 sudo apt install -y nfs-common
 sudo mkdir /mnt/NFS
 sudo mount ${NFS_IP}:${NFS_PATH} /mnt/NFS
-echo "${NFS_IP}:${NFS_PATH}        /mnt/NFS        nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0" | sudo tee -a /etc/fstab
+echo "${NFS_IP}:${NFS_PATH} /mnt/NFS nfs defaults 0 0" | sudo tee -a /etc/fstab
 
 
 

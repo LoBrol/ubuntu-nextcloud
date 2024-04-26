@@ -7,7 +7,7 @@ network:
     version: 2
     ethernets:
         renderer: networkd
-        ens32:
+        eth0:
             dhcp4: false
             addresses: [HOST_IP/HOST_SUBNET]
             routes:

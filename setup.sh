@@ -111,10 +111,14 @@ sudo unzip /var/www/html/latest.zip -d /var/www/html
 sudo rm /var/www/html/latest.zip
 sudo chown -R www-data:www-data /var/www/html/nextcloud
 sudo chown -R www-data:www-data /mnt/NFS
+
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/nextcloud.conf -P /etc/apache2/sites-available/
+sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/nextcloudssl.conf -P /etc/apache2/sites-available/
 
 sudo a2ensite nextcloud.conf
+sudo a2ensite nextcloudssl.conf
 sudo a2enmod rewrite
-service apache2 restart
+sudo a2enmod ssl
+sudo service apache2 restart
 
 # sudo -u www-data php /var/www/nextcloud/occ maintenance:install --database "mysql" --database-name "nextcloud" --database-user "${NEXTCLOUD_USER}" --database-pass "${NEXTCLOUD_PASSWORD}" --admin-user "admin" --admin-pass "password" --data-dir "/mnt/NFS"

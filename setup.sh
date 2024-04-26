@@ -96,6 +96,9 @@ echo "${NFS_IP}:${NFS_PATH} /mnt/NFS nfs defaults 0 0" | sudo tee -a /etc/fstab
 sudo apt install -y apache2 php libapache2-mod-php mariadb-server
 sudo apt install -y php-gd php-mysql php-curl php-xml php-mbstring php-zip php-intl
 
+PHP_VERSION=$(php -v | grep '[1-9]\.[1-9]' -o -m 1)
+sudo sed -i 's/memory_limit = 128M/memory_limit = 4G/g' /etc/php/${PHP_VERSION}/apache2/php.ini
+
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "CREATE DATABASE nextcloud CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "CREATE USER '${NEXTCLOUD_USER}'@'localhost' identified by '${NEXTCLOUD_PASSWORD}';"
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "GRANT ALL PRIVILEGES on nextcloud.* to '${NEXTCLOUD_USER}'@'localhost';"

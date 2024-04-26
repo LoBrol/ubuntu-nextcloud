@@ -113,10 +113,10 @@ sudo chown -R www-data:www-data /var/www/html/nextcloud
 sudo chown -R www-data:www-data /mnt/NFS
 
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/nextcloud.conf -P /etc/apache2/sites-available/
-sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/nextcloudssl.conf -P /etc/apache2/sites-available/
+sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/nextcloud_ssl.conf -P /etc/apache2/sites-available/
 
 sudo a2ensite nextcloud.conf
-sudo a2ensite nextcloudssl.conf
+sudo a2ensite nextcloud_ssl.conf
 sudo a2enmod rewrite
 sudo a2enmod ssl
 sudo service apache2 restart

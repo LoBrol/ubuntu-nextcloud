@@ -26,8 +26,8 @@ sudo apt install -y openssh-server nano ufw curl wget git unzip zsh neofetch lm-
 
 
 # --- Allow SSH on FIREWALL ---
-sudo ufw default deny incoming
-sudo ufw default deny outgoing
+#sudo ufw default deny incoming
+#sudo ufw default deny outgoing
 sudo ufw allow 22/tcp
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp

@@ -21,7 +21,7 @@ NEXTCLOUD_PASSWORD="nextcloud"
 # --- UPDATE and UPGRADE ---
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y openssh-server nano ufw curl wget git unzip zsh neofetch lm-sensors
+sudo apt install -y openssh-server nano ufw curl wget git unzip zsh lm-sensors
 
 
 

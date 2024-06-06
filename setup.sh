@@ -3,7 +3,8 @@
 
 
 NFS_IP="x.x.x.x"
-NFS_PATH="folder/folder/folder"
+NFS_LOGS="folder/folder/folder"
+NFS_DATA="folder/folder/folder"
 
 HOST_IP="x.x.x.x"
 HOST_SUBNET="32"
@@ -82,9 +83,12 @@ chsh -s /bin/zsh
 
 # --- CONFIGURE NFS ---
 sudo apt install -y nfs-common
-sudo mkdir /mnt/NFS
-sudo mount ${NFS_IP}:${NFS_PATH} /mnt/NFS
-echo "${NFS_IP}:${NFS_PATH} /mnt/NFS nfs defaults 0 0" | sudo tee -a /etc/fstab
+sudo mkdir /mnt/NEXTCLOUD_LOGS
+sudo mount ${NFS_IP}:${NFS_LOGS} /mnt/NEXTCLOUD_LOGS
+echo "${NFS_IP}:${NFS_LOGS} /mnt/NEXTCLOUD_LOGS nfs defaults 0 0" | sudo tee -a /etc/fstab
+sudo mkdir /mnt/NEXTCLOUD_DATA
+sudo mount ${NFS_IP}:${NFS_DATA} /mnt/NEXTCLOUD_DATA
+echo "${NFS_IP}:${NFS_DATA} /mnt/NEXTCLOUD_DATA nfs defaults 0 0" | sudo tee -a /etc/fstab
 
 
 
@@ -93,13 +97,18 @@ echo "${NFS_IP}:${NFS_PATH} /mnt/NFS nfs defaults 0 0" | sudo tee -a /etc/fstab
 
 # --- NEXTCLOUD ---
 sudo apt install -y apache2 php libapache2-mod-php mariadb-server
-sudo apt install -y php-gd php-mysql php-curl php-xml php-mbstring php-zip php-intl
+sudo apt install -y php-fpm libapache2-mod-fcgid php-gd php-mysql php-curl php-xml php-mbstring php-zip php-intl
 
 PHP_VERSION=$(php -v | grep '[1-9]\.[1-9]' -o -m 1)
 sudo sed -i 's/memory_limit = 128M/memory_limit = 4G/g' /etc/php/${PHP_VERSION}/apache2/php.ini
 sudo sed -i 's/output_buffering = 4096/output_buffering = 0/g' /etc/php/${PHP_VERSION}/apache2/php.ini
 sudo sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 16G/g' /etc/php/${PHP_VERSION}/apache2/php.ini
 sudo sed -i 's/post_max_size = 8M/post_max_size = 16G/g' /etc/php/${PHP_VERSION}/apache2/php.ini
+sudo systemctl restart apache2
+
+sudo a2enconf php8.2-fpm
+sudo a2enmod proxy
+sudo a2enmod proxy_fcgi
 sudo systemctl restart apache2
 
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "CREATE DATABASE nextcloud CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
@@ -111,7 +120,7 @@ sudo wget https://download.nextcloud.com/server/releases/latest.zip -P /var/www/
 sudo unzip /var/www/html/latest.zip -d /var/www/html
 sudo rm /var/www/html/latest.zip
 sudo chown -R www-data:www-data /var/www/html/nextcloud
-sudo chown -R www-data:www-data /mnt/NFS
+sudo chown -R www-data:www-data /mnt/NEXTCLOUD_DATA
 
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/nextcloud.conf -P /etc/apache2/sites-available/
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/nextcloud_ssl.conf -P /etc/apache2/sites-available/

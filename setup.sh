@@ -106,9 +106,13 @@ sudo sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 16G/g' /etc/php/${
 sudo sed -i 's/post_max_size = 8M/post_max_size = 16G/g' /etc/php/${PHP_VERSION}/apache2/php.ini
 sudo systemctl restart apache2
 
-sudo a2enconf php8.2-fpm
+FPM-CONF=$(ls /etc/apache2/conf-available/ | grep -E 'php.+-fpm' | awk -F '.conf' '{print $1}')
+sudo a2enconf ${FPM-CONF}
 sudo a2enmod proxy
 sudo a2enmod proxy_fcgi
+
+sudo a2enmod headers
+
 sudo systemctl restart apache2
 
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "CREATE DATABASE nextcloud CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"

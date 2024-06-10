@@ -189,5 +189,16 @@ sudo service apache2 restart
 
 
 
-# --- REDIS ---
+
+# --- MEMORY CACHING ---
+sudo apt install php-apcu
+sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/apcu.ini -P /etc/php/${PHP_VERSION}/mods-available/
+sudo -u www-data php --define apc.enable_cli=1 /var/www/html/nextcloud/occ maintenance:repair
+sudo service apache2 restart
+
 sudo apt install redis-server
+sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/redis.conf -P /etc/redis/
+sudo systemctl restart redis
+sudo usermod -a -G redis www-data
+
+sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/config.php -P /var/www/html/nextcloud/config/

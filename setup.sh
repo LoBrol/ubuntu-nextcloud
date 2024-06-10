@@ -19,10 +19,25 @@ NEXTCLOUD_PASSWORD="nextcloud"
 
 
 
+
+# =================================================================================================================================================================================================== #
+
+
+
+
+
 # --- UPDATE and UPGRADE ---
 sudo apt update
 sudo apt upgrade -y
 sudo apt install -y openssh-server nano ufw curl wget git unzip zsh lm-sensors
+
+
+
+
+
+# =================================================================================================================================================================================================== #
+
+
 
 
 
@@ -37,6 +52,14 @@ sudo ufw enable
 
 
 
+
+
+# =================================================================================================================================================================================================== #
+
+
+
+
+
 # --- Setting up IP ---
 sudo rm /etc/netplan/50-cloud-init.yaml
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/50-cloud-init.yaml -P /etc/netplan/
@@ -47,12 +70,17 @@ sudo netplan apply
 
 
 
+
+
+# =================================================================================================================================================================================================== #
+
+
+
+
+
 # --- Setting up NANO ---
 sudo rm /etc/nanorc
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/nanorc -P /etc/
-
-
-
 
 
 
@@ -80,6 +108,11 @@ chsh -s /bin/zsh
 
 
 
+# =================================================================================================================================================================================================== #
+
+
+
+
 
 # --- CONFIGURE NFS ---
 sudo apt install -y nfs-common
@@ -94,25 +127,35 @@ echo "${NFS_IP}:${NFS_DATA} /mnt/NEXTCLOUD_DATA nfs defaults 0 0" | sudo tee -a 
 
 
 
+# =================================================================================================================================================================================================== #
+
+
+
+
 
 # --- NEXTCLOUD ---
 sudo apt install -y apache2 php libapache2-mod-php mariadb-server
 sudo apt install -y php-fpm libapache2-mod-fcgid php-gd php-mysql php-curl php-xml php-mbstring php-zip php-intl
-
-PHP_VERSION=$(php -v | grep '[1-9]\.[1-9]' -o -m 1)
-sudo sed -i 's/memory_limit = 128M/memory_limit = 4G/g' /etc/php/${PHP_VERSION}/apache2/php.ini
-sudo sed -i 's/output_buffering = 4096/output_buffering = 0/g' /etc/php/${PHP_VERSION}/apache2/php.ini
-sudo sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 16G/g' /etc/php/${PHP_VERSION}/apache2/php.ini
-sudo sed -i 's/post_max_size = 8M/post_max_size = 16G/g' /etc/php/${PHP_VERSION}/apache2/php.ini
-sudo systemctl restart apache2
 
 FPM-CONF=$(ls /etc/apache2/conf-available/ | grep -E 'php.+-fpm' | awk -F '.conf' '{print $1}')
 sudo a2enconf ${FPM-CONF}
 sudo a2enmod proxy
 sudo a2enmod proxy_fcgi
 
+sudo a2enmod rewrite
 sudo a2enmod headers
+sudo a2enmod env
+sudo a2enmod dir
+sudo a2enmod mime
+sudo a2enmod ssl
 
+sudo systemctl restart apache2
+
+PHP_VERSION=$(php -v | grep '[1-9]\.[1-9]' -o -m 1)
+sudo sed -i 's/memory_limit = 128M/memory_limit = 6G/g' /etc/php/${PHP_VERSION}/fpm/php.ini
+sudo sed -i 's/output_buffering = 4096/output_buffering = 0/g' /etc/php/${PHP_VERSION}/fpm/php.ini
+sudo sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 64G/g' /etc/php/${PHP_VERSION}/fpm/php.ini
+sudo sed -i 's/post_max_size = 8M/post_max_size = 64G/g' /etc/php/${PHP_VERSION}/fpm/php.ini
 sudo systemctl restart apache2
 
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "CREATE DATABASE nextcloud CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
@@ -132,10 +175,19 @@ sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to
 sudo rm /etc/apache2/apache2.conf
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/apache2.conf -P /etc/apache2/
 
+sudo a2dissite 000-default.conf
 sudo a2ensite nextcloud.conf
 sudo a2ensite nextcloud_ssl.conf
-sudo a2enmod rewrite
-sudo a2enmod ssl
 sudo service apache2 restart
 
-# sudo -u www-data php /var/www/nextcloud/occ maintenance:install --database "mysql" --database-name "nextcloud" --database-user "${NEXTCLOUD_USER}" --database-pass "${NEXTCLOUD_PASSWORD}" --admin-user "admin" --admin-pass "password" --data-dir "/mnt/NFS"
+
+
+
+
+# =================================================================================================================================================================================================== #
+
+
+
+
+# --- REDIS ---
+sudo apt install redis-server

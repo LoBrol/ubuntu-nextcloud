@@ -52,14 +52,6 @@ sudo ufw enable
 
 
 
-
-
-# =================================================================================================================================================================================================== #
-
-
-
-
-
 # --- Setting up IP ---
 sudo rm /etc/netplan/50-cloud-init.yaml
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/50-cloud-init.yaml -P /etc/netplan/
@@ -137,11 +129,13 @@ echo "${NFS_IP}:${NFS_DATA} /mnt/NEXTCLOUD_DATA nfs defaults 0 0" | sudo tee -a 
 sudo apt install -y apache2 php libapache2-mod-php mariadb-server
 sudo apt install -y php-fpm libapache2-mod-fcgid php-gd php-mysql php-curl php-xml php-mbstring php-zip php-intl
 
-FPM-CONF=$(ls /etc/apache2/conf-available/ | grep -E 'php.+-fpm' | awk -F '.conf' '{print $1}')
-sudo a2enconf ${FPM-CONF}
+FPM_CONF=$(ls /etc/apache2/conf-available/ | grep -E 'php.+-fpm' | awk -F '.conf' '{print $1}')
+
+sudo a2dismod mpm_prefork
+sudo a2enmod mpm_event
+sudo a2enconf ${FPM_CONF}
 sudo a2enmod proxy
 sudo a2enmod proxy_fcgi
-
 sudo a2enmod rewrite
 sudo a2enmod headers
 sudo a2enmod env
@@ -149,26 +143,27 @@ sudo a2enmod dir
 sudo a2enmod mime
 sudo a2enmod ssl
 
-sudo systemctl restart apache2
+# sudo systemctl restart apache2
 
 PHP_VERSION=$(php -v | grep '[1-9]\.[1-9]' -o -m 1)
 sudo sed -i 's/memory_limit = 128M/memory_limit = 6G/g' /etc/php/${PHP_VERSION}/fpm/php.ini
 sudo sed -i 's/output_buffering = 4096/output_buffering = 0/g' /etc/php/${PHP_VERSION}/fpm/php.ini
 sudo sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 64G/g' /etc/php/${PHP_VERSION}/fpm/php.ini
 sudo sed -i 's/post_max_size = 8M/post_max_size = 64G/g' /etc/php/${PHP_VERSION}/fpm/php.ini
-sudo systemctl restart apache2
+
+# sudo systemctl restart apache2
 
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "CREATE DATABASE nextcloud CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "CREATE USER '${NEXTCLOUD_USER}'@'localhost' identified by '${NEXTCLOUD_PASSWORD}';"
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "GRANT ALL PRIVILEGES on nextcloud.* to '${NEXTCLOUD_USER}'@'localhost';"
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "FLUSH PRIVILEGES;"
 
-sudo wget https://download.nextcloud.com/server/releases/latest.zip -P /var/www/html
-sudo unzip /var/www/html/latest.zip -d /var/www/html
-sudo rm /var/www/html/latest.zip
-sudo chown -R www-data:www-data /var/www/html/nextcloud
-sudo chown -R www-data:www-data /mnt/NEXTCLOUD_DATA
+sudo wget https://download.nextcloud.com/server/releases/latest.zip -P /var/www/
+sudo unzip /var/www/latest.zip -d /var/www/
+sudo rm /var/www/latest.zip
 
+sudo chown -R www-data:www-data /var/www/nextcloud
+sudo chown -R www-data:www-data /mnt/NEXTCLOUD_DATA
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/nextcloud.conf -P /etc/apache2/sites-available/
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/nextcloud_ssl.conf -P /etc/apache2/sites-available/
 
@@ -183,7 +178,6 @@ sudo service apache2 restart
 
 
 
-
 # =================================================================================================================================================================================================== #
 
 
@@ -191,14 +185,14 @@ sudo service apache2 restart
 
 
 # --- MEMORY CACHING ---
-sudo apt install php-apcu
+sudo apt install -y php-apcu
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/apcu.ini -P /etc/php/${PHP_VERSION}/mods-available/
-sudo -u www-data php --define apc.enable_cli=1 /var/www/html/nextcloud/occ maintenance:repair
+sudo -u www-data php --define apc.enable_cli=1 /var/www/nextcloud/occ maintenance:repair
 sudo service apache2 restart
 
-sudo apt install redis-server
+sudo apt install -y redis-server
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/redis.conf -P /etc/redis/
 sudo systemctl restart redis
 sudo usermod -a -G redis www-data
 
-sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/config.php -P /var/www/html/nextcloud/config/
+sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/config.php -P /var/www/nextcloud/config/

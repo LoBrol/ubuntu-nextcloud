@@ -117,6 +117,13 @@ echo "${NFS_IP}:${NFS_DATA} /mnt/NEXTCLOUD_DATA nfs defaults 0 0" | sudo tee -a 
 
 
 
+# --- CONFIGURE CACHE FOLDER ---
+sudo mkdir /mnt/NEXTCLOUD_CACHE
+sudo mount /dev/sda1 /mnt/NEXTCLOUD_CACHE
+sudo chown www-data /mnt/NEXTCLOUD_CACHE
+
+
+
 
 
 # =================================================================================================================================================================================================== #

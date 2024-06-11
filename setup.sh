@@ -126,8 +126,7 @@ echo "${NFS_IP}:${NFS_DATA} /mnt/NEXTCLOUD_DATA nfs defaults 0 0" | sudo tee -a 
 
 
 # --- NEXTCLOUD ---
-sudo apt install -y apache2 php libapache2-mod-php mariadb-server
-sudo apt install -y php-fpm libapache2-mod-fcgid php-gd php-mysql php-curl php-xml php-mbstring php-zip php-intl
+sudo apt install -y apache2 php libapache2-mod-php php-fpm libapache2-mod-fcgid mariadb-server php-gd php-mysql php-curl php-xml php-mbstring php-zip php-intl php-bcmath php-gmp
 
 FPM_CONF=$(ls /etc/apache2/conf-available/ | grep -E 'php.+-fpm' | awk -F '.conf' '{print $1}')
 
@@ -143,15 +142,16 @@ sudo a2enmod dir
 sudo a2enmod mime
 sudo a2enmod ssl
 
-# sudo systemctl restart apache2
-
 PHP_VERSION=$(php -v | grep '[1-9]\.[1-9]' -o -m 1)
 sudo sed -i 's/memory_limit = 128M/memory_limit = 6G/g' /etc/php/${PHP_VERSION}/fpm/php.ini
 sudo sed -i 's/output_buffering = 4096/output_buffering = 0/g' /etc/php/${PHP_VERSION}/fpm/php.ini
 sudo sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 64G/g' /etc/php/${PHP_VERSION}/fpm/php.ini
 sudo sed -i 's/post_max_size = 8M/post_max_size = 64G/g' /etc/php/${PHP_VERSION}/fpm/php.ini
 
-# sudo systemctl restart apache2
+sudo rm /etc/apache2/apache2.conf
+sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/apache2.conf -P /etc/apache2/
+
+sudo a2dissite 000-default.conf
 
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "CREATE DATABASE nextcloud CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "CREATE USER '${NEXTCLOUD_USER}'@'localhost' identified by '${NEXTCLOUD_PASSWORD}';"
@@ -167,10 +167,6 @@ sudo chown -R www-data:www-data /mnt/NEXTCLOUD_DATA
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/nextcloud.conf -P /etc/apache2/sites-available/
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/nextcloud_ssl.conf -P /etc/apache2/sites-available/
 
-sudo rm /etc/apache2/apache2.conf
-sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/apache2.conf -P /etc/apache2/
-
-sudo a2dissite 000-default.conf
 sudo a2ensite nextcloud.conf
 sudo a2ensite nextcloud_ssl.conf
 sudo service apache2 restart
@@ -186,13 +182,37 @@ sudo service apache2 restart
 
 # --- MEMORY CACHING ---
 sudo apt install -y php-apcu
+sudo rm /etc/php/${PHP_VERSION}/mods-available/apcu.ini
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/apcu.ini -P /etc/php/${PHP_VERSION}/mods-available/
-sudo -u www-data php --define apc.enable_cli=1 /var/www/nextcloud/occ maintenance:repair
+echo "n" | sudo -u www-data php --define apc.enable_cli=1 /var/www/nextcloud/occ maintenance:repair
 sudo service apache2 restart
 
-sudo apt install -y redis-server
+
+
+sudo apt install -y redis-server php-redis
+sudo phpenmod redis
+sudo rm /etc/redis/redis.conf
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/redis.conf -P /etc/redis/
 sudo systemctl restart redis
 sudo usermod -a -G redis www-data
 
+
+
+sudo rm /var/www/nextcloud/config/config.php
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/config.php -P /var/www/nextcloud/config/
+
+
+
+
+
+
+# =================================================================================================================================================================================================== #
+
+
+
+
+
+# --- IMAGICK ---
+sudo apt install -y php-imagick libmagickcore-6.q16-6-extra
+sudo phpenmod imagick
+sudo systemctl restart apache2

@@ -23,12 +23,12 @@ $CONFIG = array (
   'maintenance' => false,
   'loglevel' => 0,
   'memcache.local' => '\\OC\\Memcache\\APCu',
-  'memachec.locking' => '\\OC\\Memcache\\Redis',
+  'memcache.locking' => '\\OC\\Memcache\\Redis',
   'redis' => 
   array (
     'host' => 'localhost',
     'port' => 6379,
-    'timeout' => 1,
+    'timeout' => 0,
     'password' => '',
   ),
 );

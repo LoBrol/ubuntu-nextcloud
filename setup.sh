@@ -115,8 +115,8 @@ echo "${NFS_IP}:${NFS_LOGS} /mnt/NEXTCLOUD_LOGS nfs defaults 0 0" | sudo tee -a 
 
 sudo mkdir /mnt/NEXTCLOUD_DATA
 sudo mount ${NFS_IP}:${NFS_DATA} /mnt/NEXTCLOUD_DATA
-echo "${NFS_IP}:${NFS_DATA} /mnt/NEXTCLOUD_DATA nfs defaults 0 0" | sudo tee -a /etc/fstab
 sudo chown www-data /mnt/NEXTCLOUD_DATA
+echo "${NFS_IP}:${NFS_DATA} /mnt/NEXTCLOUD_DATA nfs defaults 0 0" | sudo tee -a /etc/fstab
 
 
 

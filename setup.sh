@@ -110,10 +110,13 @@ chsh -s /bin/zsh
 sudo apt install -y nfs-common
 sudo mkdir /mnt/NEXTCLOUD_LOGS
 sudo mount ${NFS_IP}:${NFS_LOGS} /mnt/NEXTCLOUD_LOGS
+sudo chown www-data /mnt/NEXTCLOUD_LOGS
 echo "${NFS_IP}:${NFS_LOGS} /mnt/NEXTCLOUD_LOGS nfs defaults 0 0" | sudo tee -a /etc/fstab
+
 sudo mkdir /mnt/NEXTCLOUD_DATA
 sudo mount ${NFS_IP}:${NFS_DATA} /mnt/NEXTCLOUD_DATA
 echo "${NFS_IP}:${NFS_DATA} /mnt/NEXTCLOUD_DATA nfs defaults 0 0" | sudo tee -a /etc/fstab
+sudo chown www-data /mnt/NEXTCLOUD_DATA
 
 
 

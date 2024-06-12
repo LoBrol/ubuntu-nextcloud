@@ -194,7 +194,6 @@ sudo service apache2 restart
 sudo apt install -y php-apcu
 sudo rm /etc/php/${PHP_VERSION}/mods-available/apcu.ini
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/apcu.ini -P /etc/php/${PHP_VERSION}/mods-available/
-echo "n" | sudo -u www-data php --define apc.enable_cli=1 /var/www/nextcloud/occ maintenance:repair
 sudo service apache2 restart
 
 

@@ -145,6 +145,7 @@ sudo a2enmod mpm_event
 sudo a2enconf ${FPM_CONF}
 sudo a2enmod proxy
 sudo a2enmod proxy_fcgi
+sudo a2enmod setenvif
 sudo a2enmod rewrite
 sudo a2enmod headers
 sudo a2enmod env

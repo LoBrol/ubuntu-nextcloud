@@ -110,12 +110,10 @@ chsh -s /bin/zsh
 sudo apt install -y nfs-common
 sudo mkdir /mnt/NEXTCLOUD_LOGS
 sudo mount ${NFS_IP}:${NFS_LOGS} /mnt/NEXTCLOUD_LOGS
-sudo chown www-data /mnt/NEXTCLOUD_LOGS
 echo "${NFS_IP}:${NFS_LOGS} /mnt/NEXTCLOUD_LOGS nfs defaults 0 0" | sudo tee -a /etc/fstab
 
 sudo mkdir /mnt/NEXTCLOUD_DATA
 sudo mount ${NFS_IP}:${NFS_DATA} /mnt/NEXTCLOUD_DATA
-sudo chown www-data /mnt/NEXTCLOUD_DATA
 echo "${NFS_IP}:${NFS_DATA} /mnt/NEXTCLOUD_DATA nfs defaults 0 0" | sudo tee -a /etc/fstab
 
 
@@ -123,7 +121,6 @@ echo "${NFS_IP}:${NFS_DATA} /mnt/NEXTCLOUD_DATA nfs defaults 0 0" | sudo tee -a 
 # --- CONFIGURE CACHE FOLDER ---
 sudo mkdir /mnt/NEXTCLOUD_CACHE
 sudo mount /dev/sda1 /mnt/NEXTCLOUD_CACHE
-sudo chown www-data /mnt/NEXTCLOUD_CACHE
 
 
 
@@ -174,6 +171,9 @@ sudo rm /var/www/latest.zip
 
 sudo chown -R www-data:www-data /var/www/nextcloud
 sudo chown -R www-data:www-data /mnt/NEXTCLOUD_DATA
+sudo chown -R www-data:www-data /mnt/NEXTCLOUD_LOGS
+sudo chown -R www-data:www-data /mnt/NEXTCLOUD_CACHE
+
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/nextcloud.conf -P /etc/apache2/sites-available/
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/nextcloud_ssl.conf -P /etc/apache2/sites-available/
 

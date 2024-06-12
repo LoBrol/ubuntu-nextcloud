@@ -155,12 +155,6 @@ sudo a2enmod ssl
 
 sudo a2dissite 000-default.conf
 
-#PHP_VERSION=$(php -v | grep '[1-9]\.[1-9]' -o -m 1)
-#sudo sed -i 's/memory_limit = 128M/memory_limit = 6G/g' /etc/php/${PHP_VERSION}/fpm/php.ini
-#sudo sed -i 's/output_buffering = 4096/output_buffering = 0/g' /etc/php/${PHP_VERSION}/fpm/php.ini
-#sudo sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 64G/g' /etc/php/${PHP_VERSION}/fpm/php.ini
-#sudo sed -i 's/post_max_size = 8M/post_max_size = 64G/g' /etc/php/${PHP_VERSION}/fpm/php.ini
-
 sudo rm /etc/apache2/apache2.conf
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/apache2.conf -P /etc/apache2/
 

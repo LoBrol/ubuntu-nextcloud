@@ -108,6 +108,7 @@ chsh -s /bin/zsh
 
 # --- CONFIGURE NFS ---
 sudo apt install -y nfs-common
+
 sudo mkdir /mnt/NEXTCLOUD_LOGS
 sudo mount ${NFS_IP}:${NFS_LOGS} /mnt/NEXTCLOUD_LOGS
 echo "${NFS_IP}:${NFS_LOGS} /mnt/NEXTCLOUD_LOGS nfs defaults 0 0" | sudo tee -a /etc/fstab
@@ -135,8 +136,10 @@ sudo mount /dev/sda1 /mnt/NEXTCLOUD_CACHE
 # --- NEXTCLOUD ---
 sudo apt install -y apache2 php libapache2-mod-php php-fpm libapache2-mod-fcgid mariadb-server php-gd php-mysql php-curl php-xml php-mbstring php-zip php-intl php-bcmath php-gmp
 
+PHP_VERSION=$(php -v | grep '[1-9]\.[1-9]' -o -m 1)
 FPM_CONF=$(ls /etc/apache2/conf-available/ | grep -E 'php.+-fpm' | awk -F '.conf' '{print $1}')
 
+sudo a2dismod php${PHP_VERSION}
 sudo a2dismod mpm_prefork
 sudo a2enmod mpm_event
 sudo a2enconf ${FPM_CONF}
@@ -149,16 +152,22 @@ sudo a2enmod dir
 sudo a2enmod mime
 sudo a2enmod ssl
 
-PHP_VERSION=$(php -v | grep '[1-9]\.[1-9]' -o -m 1)
-sudo sed -i 's/memory_limit = 128M/memory_limit = 6G/g' /etc/php/${PHP_VERSION}/fpm/php.ini
-sudo sed -i 's/output_buffering = 4096/output_buffering = 0/g' /etc/php/${PHP_VERSION}/fpm/php.ini
-sudo sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 64G/g' /etc/php/${PHP_VERSION}/fpm/php.ini
-sudo sed -i 's/post_max_size = 8M/post_max_size = 64G/g' /etc/php/${PHP_VERSION}/fpm/php.ini
+sudo a2dissite 000-default.conf
+
+#PHP_VERSION=$(php -v | grep '[1-9]\.[1-9]' -o -m 1)
+#sudo sed -i 's/memory_limit = 128M/memory_limit = 6G/g' /etc/php/${PHP_VERSION}/fpm/php.ini
+#sudo sed -i 's/output_buffering = 4096/output_buffering = 0/g' /etc/php/${PHP_VERSION}/fpm/php.ini
+#sudo sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 64G/g' /etc/php/${PHP_VERSION}/fpm/php.ini
+#sudo sed -i 's/post_max_size = 8M/post_max_size = 64G/g' /etc/php/${PHP_VERSION}/fpm/php.ini
 
 sudo rm /etc/apache2/apache2.conf
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/apache2.conf -P /etc/apache2/
 
-sudo a2dissite 000-default.conf
+sudo rm /etc/php/${PHP_VERSION}/fpm/php.ini
+sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/php.ini -P /etc/php/${PHP_VERSION}/fpm/
+
+sudo rm /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
+sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/www.conf -P /etc/php/${PHP_VERSION}/fpm/pool.d/
 
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "CREATE DATABASE nextcloud CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
 sudo mysql --user ${MYSQL_USER} --password="${MYSQL_PASSWORD}" -e "CREATE USER '${NEXTCLOUD_USER}'@'localhost' identified by '${NEXTCLOUD_PASSWORD}';"

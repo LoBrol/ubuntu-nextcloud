@@ -32,4 +32,6 @@ $CONFIG = array (
     'timeout' => 0,
     'password' => '',
   ),
+  'skeletondirectory' => '',
+  'htaccess.RewriteBase' => '/',
 );

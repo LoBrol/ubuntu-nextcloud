@@ -152,6 +152,7 @@ sudo a2enmod env
 sudo a2enmod dir
 sudo a2enmod mime
 sudo a2enmod ssl
+sudo a2enmod http2
 
 sudo a2dissite 000-default.conf
 

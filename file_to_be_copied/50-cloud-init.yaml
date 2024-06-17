@@ -7,7 +7,7 @@ network:
     version: 2
     ethernets:
         renderer: networkd
-        eth0:
+        HOST_NIC:
             dhcp4: false
             addresses: [HOST_IP/HOST_SUBNET]
             routes:
@@ -15,7 +15,7 @@ network:
                 via: HOST_GATEWAY
                 metric: 10
             nameservers:
-              addresses: [HOST_GATEWAY,1.1.1.1,8.8.8.8]
+              addresses: [HOST_GATEWAY,1.1.1.1,9.9.9.9]
               search: []
             dhcp6: false
             optional: false

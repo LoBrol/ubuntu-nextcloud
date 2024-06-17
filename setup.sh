@@ -6,6 +6,7 @@ NFS_IP="x.x.x.x"
 NFS_LOGS="folder/folder/folder"
 NFS_DATA="folder/folder/folder"
 
+HOST_NIC="eth0"
 HOST_IP="x.x.x.x"
 HOST_SUBNET="32"
 HOST_GATEWAY="x.x.x.x"
@@ -29,7 +30,7 @@ NEXTCLOUD_PASSWORD="nextcloud"
 # --- UPDATE and UPGRADE ---
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y openssh-server nano ufw curl wget git unzip zsh lm-sensors
+sudo apt install -y openssh-server ufw curl wget git unzip
 
 
 
@@ -55,6 +56,7 @@ sudo ufw enable
 # --- Setting up IP ---
 sudo rm /etc/netplan/50-cloud-init.yaml
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/50-cloud-init.yaml -P /etc/netplan/
+sudo sed -i 's/HOST_NIC/'${HOST_NIC}'/g' /etc/netplan/50-cloud-init.yaml
 sudo sed -i 's/HOST_IP/'${HOST_IP}'/g' /etc/netplan/50-cloud-init.yaml
 sudo sed -i 's/HOST_SUBNET/'${HOST_SUBNET}'/g' /etc/netplan/50-cloud-init.yaml
 sudo sed -i 's/HOST_GATEWAY/'${HOST_GATEWAY}'/g' /etc/netplan/50-cloud-init.yaml
@@ -71,6 +73,7 @@ sudo netplan apply
 
 
 # --- Setting up NANO ---
+sudo apt install -y nano
 sudo rm /etc/nanorc
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/nanorc -P /etc/
 
@@ -84,11 +87,13 @@ sudo chmod -x /etc/update-motd.d/50-motd-news
 
 
 # --- Setting up SENSORS ---
+sudo apt install -y lm-sensors
 echo "Y Y Y" | sudo sensors-detect
 
 
 
 # --- Setting up ZSH ---
+sudo apt install -y zsh
 echo "N exit" | sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 rm .zshrc

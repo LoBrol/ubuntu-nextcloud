@@ -125,6 +125,8 @@ echo "${NFS_IP}:${NFS_DATA} /mnt/NEXTCLOUD_DATA nfs defaults 0 0" | sudo tee -a 
 
 # --- CONFIGURE CACHE FOLDER ---
 sudo mkdir /mnt/NEXTCLOUD_CACHE
+sudo mount /dev/sdb1 /mnt/NEXTCLOUD_CACHE
+echo "/dev/sdb1 /mnt/NEXTCLOUD_CACHE etx4 defaults 0 0" | sudo tee -a /etc/fstab
 
 
 
@@ -211,7 +213,7 @@ sudo phpenmod redis
 sudo rm /etc/redis/redis.conf
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/redis.conf -P /etc/redis/
 sudo systemctl restart redis
-sudo usermod -a -G redis www-data
+sudo usermod -a -G redis www-data:www-data
 
 
 

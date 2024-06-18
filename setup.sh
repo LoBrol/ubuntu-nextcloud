@@ -214,13 +214,7 @@ sudo phpenmod redis
 sudo rm /etc/redis/redis.conf
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/redis.conf -P /etc/redis/
 sudo systemctl restart redis
-sudo usermod -a -G redis www-data:www-data
-
-
-
-# sudo rm /var/www/nextcloud/config/config.php
-# sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/config.php -P /var/www/nextcloud/config/
-
+sudo usermod -a -G redis www-data
 
 
 
@@ -236,3 +230,18 @@ sudo usermod -a -G redis www-data:www-data
 sudo apt install -y php-imagick libmagickcore-6.q16-6-extra
 sudo phpenmod imagick
 sudo systemctl restart apache2
+
+
+
+
+
+# =================================================================================================================================================================================================== #
+
+
+
+
+# --- NEXTCLOUD CONFIG ---
+sudo rm /var/www/nextcloud/config/config.php
+sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/config.php -P /var/www/nextcloud/config/
+sudo chown -R www-data:www-data /var/www/nextcloud/config/config.php
+sudo -u www-data php --define apc.enable_cli=1 /var/www/nextcloud/occ config:app:set files max_chunk_size --value 2048

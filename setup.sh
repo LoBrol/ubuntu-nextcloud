@@ -86,12 +86,6 @@ sudo chmod -x /etc/update-motd.d/50-motd-news
 
 
 
-# --- Setting up SENSORS ---
-sudo apt install -y lm-sensors
-echo "Y Y Y" | sudo sensors-detect
-
-
-
 # --- Setting up ZSH ---
 sudo apt install -y zsh
 echo "N exit" | sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
@@ -100,6 +94,11 @@ rm .zshrc
 wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/.zshrc
 wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/.p10k.zsh
 chsh -s /bin/zsh
+
+
+
+# --- Installing Avahi for mDNS ---
+sudo apt install -y avahi-daemon
 
 
 
@@ -126,7 +125,6 @@ echo "${NFS_IP}:${NFS_DATA} /mnt/NEXTCLOUD_DATA nfs defaults 0 0" | sudo tee -a 
 
 # --- CONFIGURE CACHE FOLDER ---
 sudo mkdir /mnt/NEXTCLOUD_CACHE
-# sudo mount /dev/sda1 /mnt/NEXTCLOUD_CACHE
 
 
 
@@ -217,8 +215,8 @@ sudo usermod -a -G redis www-data
 
 
 
-sudo rm /var/www/nextcloud/config/config.php
-sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/config.php -P /var/www/nextcloud/config/
+# sudo rm /var/www/nextcloud/config/config.php
+# sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/config.php -P /var/www/nextcloud/config/
 
 
 

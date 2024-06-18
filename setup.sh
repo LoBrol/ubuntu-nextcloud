@@ -30,7 +30,7 @@ NEXTCLOUD_PASSWORD="nextcloud"
 # --- UPDATE and UPGRADE ---
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y openssh-server ufw curl wget git unzip
+sudo apt install -y openssh-server ufw wget git unzip htop
 
 
 

@@ -83,6 +83,7 @@ sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to
 sudo rm -rf /etc/legal
 sudo chmod -x /etc/update-motd.d/10-help-text
 sudo chmod -x /etc/update-motd.d/50-motd-news
+sudo chmod -x /etc/update-motd.d/60-unminimize
 
 
 

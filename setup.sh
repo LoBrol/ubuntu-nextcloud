@@ -205,7 +205,8 @@ sudo service apache2 restart
 sudo apt install -y php-apcu
 sudo rm /etc/php/${PHP_VERSION}/mods-available/apcu.ini
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/apcu.ini -P /etc/php/${PHP_VERSION}/mods-available/
-sudo service apache2 restart
+sudo phpenmod apcu
+sudo systemctl restart php${PHP_VERSION}-fpm
 
 
 

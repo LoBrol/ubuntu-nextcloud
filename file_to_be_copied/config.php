@@ -24,6 +24,7 @@ $CONFIG = array (
   'loglevel' => 0,
   'memcache.local' => '\\OC\\Memcache\\APCu',
   'cache_path' => '/mnt/NEXTCLOUD_CACHE',
+  'memcache.distributed' => '\\OC\\Memcache\\Redis',
   'memcache.locking' => '\\OC\\Memcache\\Redis',
   'redis' => 
   array (

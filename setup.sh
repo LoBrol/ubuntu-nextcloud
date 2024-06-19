@@ -267,4 +267,4 @@ sudo systemctl restart apache2
 sudo rm /var/www/nextcloud/config/config.php
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/config.php -P /var/www/nextcloud/config/
 sudo chown -R www-data:www-data /var/www/nextcloud/config/config.php
-sudo -u www-data php --define apc.enable_cli=1 /var/www/nextcloud/occ config:app:set files max_chunk_size --value 2048
+sudo -u www-data php --define apc.enable_cli=1 /var/www/nextcloud/occ config:app:set files max_chunk_size --value 2147483648     # 2GB chunk

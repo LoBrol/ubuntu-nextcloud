@@ -206,6 +206,15 @@ sudo apt install -y php-apcu
 sudo rm /etc/php/${PHP_VERSION}/mods-available/apcu.ini
 sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/apcu.ini -P /etc/php/${PHP_VERSION}/mods-available/
 sudo phpenmod apcu
+
+
+
+sudo rm /etc/php/${PHP_VERSION}/mods-available/igbinary.ini
+sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to_be_copied/igbinary.ini -P /etc/php/${PHP_VERSION}/mods-available/
+sudo phpenmod igbinary
+
+
+
 sudo systemctl restart php${PHP_VERSION}-fpm
 
 
@@ -217,6 +226,19 @@ sudo wget https://raw.githubusercontent.com/LoBrol/ubuntu-nextcloud/main/file_to
 sudo systemctl restart redis
 sudo usermod -a -G redis www-data
 
+
+
+
+
+# =================================================================================================================================================================================================== #
+
+
+
+
+
+# --- CRONTAB ---
+sudo apt install -y cron
+sudo -u www-data crontab -l | sed "\$a*/5 * * * * php --define apc.enable_cli=1 /var/www/nextcloud/cron.php" | sudo -u www-data crontab -
 
 
 

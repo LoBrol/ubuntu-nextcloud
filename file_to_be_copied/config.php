@@ -10,7 +10,7 @@ $CONFIG = array (
   ),
   'datadirectory' => '/mnt/NEXTCLOUD_DATA',
   'dbtype' => 'mysql',
-  'version' => '29.0.2.2',
+  'version' => '29.0.4.1',
   'overwrite.cli.url' => 'http://nextcloud.local',
   'dbname' => 'nextcloud',
   'dbhost' => 'localhost',

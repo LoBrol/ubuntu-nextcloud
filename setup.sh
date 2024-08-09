@@ -238,7 +238,7 @@ sudo usermod -a -G redis www-data
 
 # --- CRONTAB ---
 sudo apt install -y cron
-sudo -u www-data crontab -l | sed "\$a*/5 * * * * php --define apc.enable_cli=1 /var/www/nextcloud/cron.php" | sudo -u www-data crontab -
+crontab -u www-data -l | { cat; echo "*/5 * * * * php --define apc.enable_cli=1 /var/www/nextcloud/cron.php"; } | crontab -u www-data -
 
 
 
